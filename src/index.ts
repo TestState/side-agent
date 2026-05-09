@@ -34,7 +34,7 @@ const activeDrivers = new Set<WebDriver>();
 let isShuttingDown = false;
 
 async function main() {
-    const { Agent } = await import("testgenesis-client-node");
+    const { Agent } = await import("teststate-client-node");
     const agent = new Agent({
         hubUrl: CONFIG.HUB_URL,
         displayName: CONFIG.CLIENT_NAME,

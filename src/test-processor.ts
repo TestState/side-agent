@@ -12,7 +12,7 @@ import {
     TestSessionProcessor,
     TestState,
     timestampFromDate
-} from "testgenesis-client-node";
+} from "teststate-client-node";
 
 import {TestLogger, TestRunner} from "@hsgamer/side-engine";
 import * as selenium from "selenium-webdriver";

@@ -6,7 +6,7 @@ import {
     TranslationSessionContext,
     TranslationSessionProcessor,
     TranslationState,
-} from "testgenesis-client-node";
+} from "teststate-client-node";
 import type { ProjectShape, TestShape, SuiteShape } from "@seleniumhq/side-model";
 
 /**
@@ -42,7 +42,7 @@ export class SideMergeProcessor implements TranslationSessionProcessor {
                 message: "Starting SIDE payloads merge...",
             });
 
-            const sourcePayloads = init.payloads.filter((p) => p.type === "selenium-side");
+            const sourcePayloads = init.payloads.filter((p: any) => p.type === "selenium-side");
             if (sourcePayloads.length === 0) {
                 await context.sendStatus({
                     state: TranslationState.FAILED,

@@ -6,7 +6,7 @@ import {
     TranslationSessionContext,
     TranslationSessionProcessor,
     TranslationState
-} from "testgenesis-client-node";
+} from "teststate-client-node";
 
 import type {ProjectShape} from "@seleniumhq/side-model";
 

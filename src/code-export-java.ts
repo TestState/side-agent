@@ -9,7 +9,7 @@ import {
     TranslationSessionContext,
     TranslationState,
     TranslationStatusSchema
-} from "testgenesis-client-node";
+} from "teststate-client-node";
 import _javaExporter from "@seleniumhq/code-export-java-junit";
 import {CommandShape, ProjectShape, TestShape} from "@seleniumhq/side-model";
 import {LanguageEmitter} from "@seleniumhq/side-code-export";
