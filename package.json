@@ -1,5 +1,5 @@
 {
-  "name": "node-side-agent",
+  "name": "teststate-side-agent",
   "version": "1.0.0",
   "description": "UAP-compliant Selenium IDE (.side) Execution Agent",
   "main": "dist/index.js",
