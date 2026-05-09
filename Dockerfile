@@ -6,8 +6,8 @@ WORKDIR /workspace
 COPY specification /specification
 
 # Build shared library
-COPY implementation/client/client-node /workspace/teststate-client-node
-WORKDIR /workspace/teststate-client-node
+COPY implementation/client/client-node /workspace/client-node
+WORKDIR /workspace/client-node
 RUN npm install && npm run build
 
 # Build side-agent
@@ -20,7 +20,7 @@ FROM node:22-slim
 WORKDIR /app
 
 # Copy built library and agent
-COPY --from=build /workspace/teststate-client-node /app/teststate-client-node
+COPY --from=build /workspace/client-node /app/client-node
 COPY --from=build /workspace/side-agent /app/side-agent
 
 WORKDIR /app/side-agent
