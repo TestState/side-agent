@@ -6,7 +6,7 @@ WORKDIR /workspace
 COPY specification /specification
 
 # Build shared library
-COPY implementation/client/teststate-client-node /workspace/teststate-client-node
+COPY implementation/client/client-node /workspace/teststate-client-node
 WORKDIR /workspace/teststate-client-node
 RUN npm install && npm run build
 
