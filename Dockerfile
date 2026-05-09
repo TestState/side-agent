@@ -13,7 +13,7 @@ RUN npm install && npm run build
 # Build side-agent
 WORKDIR /workspace/side-agent
 COPY implementation/client/side-agent /workspace/side-agent
-RUN npm install && npm run build
+RUN npm install /workspace/client-node --no-save && npm install && npm run build
 
 # Stage 2: Runtime
 FROM node:22-slim
