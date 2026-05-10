@@ -4,6 +4,7 @@ import {
     cleanObject,
     create,
     msToDuration,
+    Severity,
     StepReportSchema,
     StepStatus,
     SummarySchema,
@@ -22,8 +23,8 @@ import * as firefox from "selenium-webdriver/firefox";
 import * as safari from "selenium-webdriver/safari";
 import * as edge from "selenium-webdriver/edge";
 import * as os from "os";
-import {CommandStates, PlaybackStates, Variables, WebDriverExecutor} from "@seleniumhq/side-runtime";
-import type {TestShape} from "@seleniumhq/side-model";
+import {CommandHookInput, CommandStates, PlaybackStates, Variables, WebDriverExecutor} from "@seleniumhq/side-runtime";
+import type {CommandShape, TestShape} from "@seleniumhq/side-model";
 
 const seleniumVersion = (selenium as any).version as string | undefined;
 
@@ -196,17 +197,31 @@ class TestSession {
             let webDriverExecutorArgs: WebDriverExecutorConstructorArgs = {
                 driver: this.driver,
                 hooks: {
-                    onAfterCommand: async (hook: any) => {
+                    onBeforeCommand: async (hook: CommandHookInput) => {
+                        const command = hook.command;
+                        const detail = this.getCommandDetail(command);
+                        await this.context.sendTelemetry(`[Step Start] ${detail}`, Severity.INFO);
+                    },
+                    onAfterCommand: async (hook: CommandHookInput) => {
+                        const command = hook.command;
+                        const detail = this.getCommandDetail(command);
+
                         if (takeScreenshot) {
-                            const data = await this.driver!.takeScreenshot();
-                            const name = `screenshot-${hook.command.id}.png`;
-                            attachments.push(create(AttachmentSchema, {
-                                name,
-                                mimeType: "image/png",
-                                data: Buffer.from(data, 'base64')
-                            }));
-                            screenshotMap.set(hook.command.id, name);
+                            try {
+                                const data = await this.driver!.takeScreenshot();
+                                const name = `screenshot-${command.id}.png`;
+                                attachments.push(create(AttachmentSchema, {
+                                    name,
+                                    mimeType: "image/png",
+                                    data: Buffer.from(data, 'base64')
+                                }));
+                                screenshotMap.set(command.id, name);
+                            } catch (e) {
+                                await this.context.sendTelemetry(`Failed to take step screenshot: ${e}`, Severity.WARN);
+                            }
                         }
+
+                        await this.context.sendTelemetry(`[Step End] ${detail} complete.`, Severity.INFO);
                     }
                 }
             };
@@ -325,5 +340,12 @@ class TestSession {
                 this.driver = null;
             }
         }
+    }
+
+    private getCommandDetail(command: CommandShape): string {
+        const parts: string[] = [command.command];
+        if (command.target) parts.push(`on ${command.target}`);
+        if (command.value) parts.push(`with "${command.value}"`);
+        return parts.join(" ");
     }
 }
