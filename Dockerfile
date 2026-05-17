@@ -29,6 +29,7 @@ WORKDIR /app/side-agent
 ENV HUB_URL=http://cms:9000
 ENV CLIENT_NAME=DockerSideAgent
 ENV SELENIUM_REMOTE_URL=http://selenium-hub:4444/wd/hub
+ENV DBUS_SESSION_BUS_ADDRESS=/dev/null
 
 # Run the compiled JavaScript directly with Node
 CMD ["node", "dist/index.js"]

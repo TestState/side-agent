@@ -124,7 +124,16 @@ class TestSession {
             }
 
             let browser = "chrome";
-            let args: string[] = [];
+            let args: string[] = [
+                "--no-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-gpu",
+                "--disable-software-rasterizer",
+                "--no-first-run",
+                "--no-default-browser-check",
+                "--disable-extensions",
+                "--mute-audio"
+            ];
             let userPrefs: any = {};
             const configPayload = payloads.find((p: any) => p.type === "selenium-config");
             if (configPayload?.attachment) {
@@ -133,7 +142,7 @@ class TestSession {
                     browser = config.browser || browser;
                     takeScreenshot = config.takeScreenshot || takeScreenshot;
                     if (Array.isArray(config.args)) {
-                        args = config.args;
+                        args = [...args, ...config.args];
                     }
                     if (config.prefs) {
                         userPrefs = config.prefs;
