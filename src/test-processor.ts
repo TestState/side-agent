@@ -127,12 +127,14 @@ class TestSession {
             let args: string[] = [
                 "--no-sandbox",
                 "--disable-dev-shm-usage",
-                "--disable-gpu",
-                "--disable-software-rasterizer",
                 "--no-first-run",
                 "--no-default-browser-check",
                 "--disable-extensions",
-                "--mute-audio"
+                "--mute-audio",
+                "--disable-background-timer-throttling",
+                "--disable-backgrounding-occluded-windows",
+                "--disable-renderer-backgrounding",
+                "--disable-ipc-flooding-protection"
             ];
             let userPrefs: any = {};
             const configPayload = payloads.find((p: any) => p.type === "selenium-config");
@@ -180,18 +182,32 @@ class TestSession {
                 ...userPrefs
             };
 
+            const isHeadless = process.env.HEADLESS === "true" || process.env.TESTSTATE_HEADLESS === "true";
+
             if (browser === "chrome") {
                 let options = new chrome.Options();
-                if (args.length > 0) options.addArguments(...args);
+                let chromeArgs = [...args];
+                if (isHeadless) {
+                    chromeArgs.push("--headless=new", "--disable-gpu", "--disable-software-rasterizer");
+                }
+                if (chromeArgs.length > 0) options.addArguments(...chromeArgs);
                 options.setUserPreferences(mergedPrefs);
                 builder.setChromeOptions(options);
             } else if (browser === "firefox") {
                 let options = new firefox.Options();
-                if (args.length > 0) options.addArguments(...args);
+                let firefoxArgs = [...args];
+                if (isHeadless) {
+                    firefoxArgs.push("-headless", "--disable-gpu", "--disable-software-rasterizer");
+                }
+                if (firefoxArgs.length > 0) options.addArguments(...firefoxArgs);
                 builder.setFirefoxOptions(options);
             } else if (browser === "edge") {
                 let options = new edge.Options();
-                if (args.length > 0) options.addArguments(...args);
+                let edgeArgs = [...args];
+                if (isHeadless) {
+                    edgeArgs.push("--headless=new", "--disable-gpu", "--disable-software-rasterizer");
+                }
+                if (edgeArgs.length > 0) options.addArguments(...edgeArgs);
                 options.setUserPreferences(mergedPrefs);
                 builder.setEdgeOptions(options);
             } else if (browser === "safari") {
